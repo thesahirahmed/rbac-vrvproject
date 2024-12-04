@@ -12,7 +12,7 @@ This project is a Role-Based Access Control (RBAC) system for the VRV project. I
 ### Installation
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/rbac-vrvproject.git
+    git clone https://github.com/thesahirahmed/rbac-vrvproject.git
     ```
 2. Navigate to the project directory:
     ```sh
