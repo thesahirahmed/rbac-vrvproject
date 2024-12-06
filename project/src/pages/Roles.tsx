@@ -7,6 +7,7 @@ const permissions = [
   { id: '3', name: 'Edit Users', description: 'Modify user information' },
   { id: '4', name: 'Delete Users', description: 'Remove users from the system' },
   { id: '5', name: 'Manage Roles', description: 'Assign and modify user roles' },
+  { id: '6', name: 'Moderate Content', description: 'Moderate user-generated content' },
 ];
 
 const roles = [
@@ -14,6 +15,11 @@ const roles = [
     name: 'Admin',
     description: 'Full system access',
     permissions: permissions.map(p => p.id),
+  },
+  {
+    name: 'Moderator',
+    description: 'Content moderation and user management',
+    permissions: ['1', '2', '3', '6'],
   },
   {
     name: 'User',

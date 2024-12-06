@@ -1,15 +1,20 @@
 import React from 'react';
 import { useAuthStore } from '../store/auth';
-import { Trash2, Edit, UserPlus } from 'lucide-react';
+import { Trash2, Edit, UserPlus, ToggleLeft, ToggleRight } from 'lucide-react';
 import { generateAvatarUrl } from '../lib/utils';
+import type { Role } from '../types/auth';
 
 export default function Users() {
   const { users, deleteUser, updateUser } = useAuthStore();
   const [editingUser, setEditingUser] = React.useState<string | null>(null);
 
-  const handleRoleChange = (userId: string, newRole: 'admin' | 'user') => {
+  const handleRoleChange = (userId: string, newRole: Role) => {
     updateUser(userId, { role: newRole });
     setEditingUser(null);
+  };
+
+  const handleToggleActive = (userId: string, currentActive: boolean) => {
+    updateUser(userId, { isActive: !currentActive });
   };
 
   const handleDeleteUser = (userId: string) => {
@@ -33,6 +38,9 @@ export default function Users() {
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 Role
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 Joined
@@ -68,21 +76,41 @@ export default function Users() {
                   {editingUser === user.id ? (
                     <select
                       value={user.role}
-                      onChange={(e) => handleRoleChange(user.id, e.target.value as 'admin' | 'user')}
+                      onChange={(e) => handleRoleChange(user.id, e.target.value as Role)}
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600"
                     >
                       <option value="user">User</option>
+                      <option value="moderator">Moderator</option>
                       <option value="admin">Admin</option>
                     </select>
                   ) : (
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                       user.role === 'admin' 
-                        ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' 
+                        ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                        : user.role === 'moderator'
+                        ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
                         : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                     }`}>
                       {user.role}
                     </span>
                   )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <button
+                    onClick={() => handleToggleActive(user.id, user.isActive)}
+                    className={`flex items-center ${
+                      user.isActive
+                        ? 'text-green-600 hover:text-green-900'
+                        : 'text-red-600 hover:text-red-900'
+                    }`}
+                  >
+                    {user.isActive ? (
+                      <ToggleRight className="h-5 w-5" />
+                    ) : (
+                      <ToggleLeft className="h-5 w-5" />
+                    )}
+                    <span className="ml-2">{user.isActive ? 'Active' : 'Inactive'}</span>
+                  </button>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                   {new Date(user.createdAt).toLocaleDateString()}
